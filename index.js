@@ -8,8 +8,9 @@ dbConnection()
 
 
 app.use(express.json())
-
-app.listen(5000,()=>{
+app.get("/",(req,res)=>{
+    res.send('hello this is hasu world')
+})
+app.listen(process.env.PORT || 5000,()=>{
     console.log('server is running')
-
 })
