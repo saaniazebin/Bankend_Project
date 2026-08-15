@@ -3,20 +3,33 @@ const {Schema}=mongoose
 const userSchema=new Schema({
     email:{
         type:String,
-        required:true,
-        unique:true
+        
     },
     username:{
         type:String
     },
-    otp:{
+    // otp:{
+    //     type:String,
+    //     required:true,
+    //     unique:true
+    // },
+    // isLogin:{
+    //     type:Boolean,
+    //     default:false
+    // },
+    role:{
         type:String,
-        required:true,
-        unique:true
+        enum:["student","teacher","management"],
+        default:"student"
     },
-    isLogin:{
-        type:Boolean,
-        default:false
+    permission:{
+        type:[String],
+    },
+    
+    password:{
+        type:String
     }
+
 })
-module.exports=mongoose.model("User",userSchema)
+
+module.exports=mongoose.model("Users",userSchema)

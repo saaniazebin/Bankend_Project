@@ -1,10 +1,24 @@
+require("dotenv").config()
+
+
+
+
+
+
+
+
+
+
 const express = require('express');
 const router = express.Router();
 const nodemailer = require("nodemailer");
 const otpGenerator = require('otp-generator')
 const User=require("../models/userSchema");
-const e = require('express');
 
+const Permission=require("../permission");
+const permission = require('../permission');
+const jwt = require('jsonwebtoken');
+const { ServerClosedEvent } = require('mongodb');
 ////////////////nodemailer///////////
 const transporter = nodemailer.createTransport({
   service: "gmail",
@@ -122,4 +136,51 @@ router.post("/logout",async(req,res)=>{
      await User.findOneAndUpdate({email:email},{otp:"",isLogin:false})
    }
 })
+
+
+
+///privateInformation part/////
+
+router.post("/registration",async(req,res)=>{
+  const {username,password,email,role="student"}=req.body
+  let per=[]
+  permission.map(item=>{
+    if(item.role==role){
+      per=item.permission
+     }
+   
+  })
+   let user=await new User({
+      username:username,
+      email:email,
+      role:role,
+      permission:per,
+      
+   }).save()
+
+
+
+
+   res.json({
+        data:user
+   })
+})
+router.post("/login1",async(req,res)=>{
+  let {email}=req.body
+  let existingUser=await User.findOne({email:email})
+
+  let token=jwt.sign({
+    _id:existingUser._id,
+    email:existingUser.email,
+    role:existingUser.role,
+    permission:existingUser.permission
+  },process.env.JWT_SECRET_ACCESS,{
+    expiresIn:'1h'
+  })
+
+  res.json({
+    accessToken:token
+  })
+})
+console.log(process.env.JWT_SECRET_ACCESS);
 module.exports = router;
