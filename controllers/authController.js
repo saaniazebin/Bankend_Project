@@ -1,4 +1,4 @@
-const emptyFieldValidation=require("../utils/emptyFieldValidation")
+// const emptyFieldValidation=require("../utils/emptyFieldValidation")
 const bcrypt=require("bcrypt")
 const User=require("../models/userSchema")
 const router = require("../routes/authRoutes")
